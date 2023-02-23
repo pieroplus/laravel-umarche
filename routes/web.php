@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ComponentTestController;
+use App\Http\Controllers\LifeCycleTestController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,6 +22,8 @@ Route::get('/', function () {
 
 Route::get('/component-test1', [ComponentTestController::class, 'showComponent1']);
 Route::get('/component-test2', [ComponentTestController::class, 'showComponent2']);
+Route::get('/serviceContainerTest', [LifeCycleTestController::class, 'showSeviceContainerTest']);
+Route::get('/serviceProviderTest', [LifeCycleTestController::class, 'showSeviceProviderTest']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
