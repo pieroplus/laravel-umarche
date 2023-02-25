@@ -1,8 +1,6 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ComponentTestController;
-use App\Http\Controllers\LifeCycleTestController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,22 +15,17 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('user.welcome');
+    return view('admin.welcome');
 });
 
-Route::get('/component-test1', [ComponentTestController::class, 'showComponent1']);
-Route::get('/component-test2', [ComponentTestController::class, 'showComponent2']);
-Route::get('/serviceContainerTest', [LifeCycleTestController::class, 'showSeviceContainerTest']);
-Route::get('/serviceProviderTest', [LifeCycleTestController::class, 'showSeviceProviderTest']);
-
 Route::get('/dashboard', function () {
-    return view('user.dashboard');
-})->middleware(['auth:users', 'verified'])->name('dashboard');
+    return view('admin.dashboard');
+})->middleware(['auth:admin', 'verified'])->name('dashboard');
 
-Route::middleware('auth:users')->group(function () {
+Route::middleware('auth:admin')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/userAuth.php';
+require __DIR__.'/adminAuth.php';
