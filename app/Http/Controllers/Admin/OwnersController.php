@@ -23,25 +23,16 @@ public function __construct()
      */
     public function index(): View
     {
-
-        $dateNow = Carbon::now();
-        $dateParse = Carbon::parse(now());
-        // echo $dateNow;
-        // echo $dateParse;
-        $eAll = Owner::all();
-        $qGet = DB::table('owners')->select('name', 'created_at')->get();
-        // $qFirst = DB::table('owners')->select('name')->first();
-        // $cTest = collect(['name' => 'test']);
-        // dd($eAll, $qGet, $qFirst, $cTest);
-        return view('admin.owners.index', compact('eAll', 'qGet'));
+        $owners = Owner::select('name', 'email', 'created_at')->get();
+        return view('admin.owners.index', compact('owners'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): Response
+    public function create(): View
     {
-        //
+        return view('admin.owners.create');
     }
 
     /**
