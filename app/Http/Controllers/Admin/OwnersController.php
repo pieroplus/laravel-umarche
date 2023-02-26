@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use App\Http\Requests\Owner\OwnerStoreRequest;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
 use App\Models\Owner; // Eloquent
 use Illuminate\Support\Facades\DB; // QueryBuilder
+use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 
 class OwnersController extends Controller
@@ -38,9 +40,15 @@ public function __construct()
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(OwnerStoreRequest $request): RedirectResponse
     {
-        //
+        Owner::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+        return redirect()->route('admin.owners.index')
+            ->with('message', "オーナーを登録しました。");
     }
 
     /**
