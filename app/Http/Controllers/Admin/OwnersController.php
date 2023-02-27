@@ -49,7 +49,7 @@ class OwnersController extends Controller
             'password' => Hash::make($request->password),
         ]);
         return redirect()->route('admin.owners.index')
-            ->with('message', "オーナーを登録しました。");
+            ->with(['message' => "オーナーを登録しました。"]);
     }
 
     /**
@@ -72,7 +72,7 @@ class OwnersController extends Controller
         $owner->password = Hash::make($request->password);
         $owner->save();
         return redirect()->route('admin.owners.index')
-            ->with('message', '更新に成功しました。');
+            ->with(['message' => '更新に成功しました。']);
     }
 
     /**
@@ -80,6 +80,42 @@ class OwnersController extends Controller
      */
     public function destroy(string $id): RedirectResponse
     {
-        //
+        Owner::findOrFail($id)->delete();
+        return redirect()->route('admin.owners.index')
+            ->with(
+                [
+                    'status' => 'alert',
+                    'message' => 'オーナー情報を削除しました。'
+                ]
+            );
+    }
+
+    public function expiredOwnerIndex(): View
+    {
+        $expiredOwners = Owner::onlyTrashed()->get();
+        return view('admin.expired-owners', compact('expiredOwners'));
+    }
+
+    public function expiredOwnerRestore(string $id): RedirectResponse
+    {
+        Owner::onlyTrashed()->findOrFail($id)->restore();
+        return redirect()->route('admin.owners.index')
+            ->with(
+                [
+                    'status' => 'info',
+                    'message' => '期限切れのオーナーを復活させました。'
+                ]);
+    }
+    
+    public function expiredOwnerDestroy(string $id): RedirectResponse
+    {
+        Owner::onlyTrashed()->findOrFail($id)->forceDelete();
+        return redirect()->route('admin.expired-owners.index')
+            ->with(
+                [
+                    'status' => 'alert',
+                    'message' => '期限切れオーナーを完全に削除しました。',
+                ]
+            ); 
     }
 }

@@ -23,6 +23,12 @@ Route::resource('owners', OwnersController::class)
     ->middleware('auth:admin')
     ->except('show');
 
+Route::prefix('expired-owners')->
+    middleware('auth:admin')->group(function(){
+        Route::get('index', [OwnersController::class, 'expiredOwnerIndex'])->name('expired-owners.index');
+        Route::put('restore/{owner}', [OwnersController::class, 'expiredOwnerRestore'])->name('expired-owners.restore');
+        Route::delete('destroy/{owner}', [OwnersController::class, 'expiredOwnerDestroy'])->name('expired-owners.destroy');
+});
 Route::get('/dashboard', function () {
     return view('admin.dashboard');
 })->middleware(['auth:admin', 'verified'])->name('dashboard');
