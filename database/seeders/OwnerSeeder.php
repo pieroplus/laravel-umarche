@@ -33,6 +33,48 @@ class OwnerSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'created_at' => '2023/01/01 11:11:11'
             ],
+            [
+                'name' => 'owner4',
+                'email' => 'owner4@hoge.com',
+                'password' => Hash::make('password'),
+                'created_at' => '2023/01/01 11:11:11'
+            ],
+            [
+                'name' => 'owner5',
+                'email' => 'owner5@hoge.com',
+                'password' => Hash::make('password'),
+                'created_at' => '2023/01/01 11:11:11'
+            ],
+            [
+                'name' => 'owner6',
+                'email' => 'owner6@hoge.com',
+                'password' => Hash::make('password'),
+                'created_at' => '2023/01/01 11:11:11'
+            ],
+            [
+                'name' => 'owner7',
+                'email' => 'owner7@hoge.com',
+                'password' => Hash::make('password'),
+                'created_at' => '2023/01/01 11:11:11'
+            ],
+            [
+                'name' => 'owner8',
+                'email' => 'owner8@hoge.com',
+                'password' => Hash::make('password'),
+                'created_at' => '2023/01/01 11:11:11'
+            ],
+            [
+                'name' => 'owner9',
+                'email' => 'owner9@hoge.com',
+                'password' => Hash::make('password'),
+                'created_at' => '2023/01/01 11:11:11'
+            ],
+            [
+                'name' => 'owner10',
+                'email' => 'owner10@hoge.com',
+                'password' => Hash::make('password'),
+                'created_at' => '2023/01/01 11:11:11'
+            ],
         ]);
     }
 }
