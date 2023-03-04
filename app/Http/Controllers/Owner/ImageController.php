@@ -72,20 +72,14 @@ class ImageController extends Controller
 
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id): Response
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id): Response
+    public function edit(string $id): View
     {
-        //
+        $image = Image::findOrFail($id);
+        return view('owner.images.edit', compact('image'));
     }
 
     /**
@@ -93,7 +87,14 @@ class ImageController extends Controller
      */
     public function update(Request $request, string $id): RedirectResponse
     {
-        //
+        $image = Image::findOrFail($id);
+        $image->title = $request->title;
+        $image->save();
+        return redirect()->route('owner.images.index')
+            ->with([
+                'message' => 'タイトルを更新しました。',
+                'status' => 'info',
+            ]);
     }
 
     /**
