@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Shop;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\RedirectResponse;
+use InterventionImage;
 
 class ShopController extends Controller
 {
@@ -35,20 +36,26 @@ public function __construct()
         return view('owner.shops.index', compact('shops'));
     }
 
-public function edit(string $id): View
-{
-    $shop = Shop::findOrFail($id);
-    // if (Auth::id() !== (int)$shop->owner->id) {
-    //     abort(403);
-    // }
-    return view('owner.shops.edit', compact('shop'));
-}
+    public function edit(string $id): View
+    {
+        $shop = Shop::findOrFail($id);
+        // if (Auth::id() !== (int)$shop->owner->id) {
+        //     abort(403);
+        // }
+        return view('owner.shops.edit', compact('shop'));
+    }
 
     public function update(Request $request, string $id): RedirectResponse
     {
         $imageFile = $request->image;
         if(!is_null($imageFile) && $imageFile->isValid()) {
-            Storage::putFile('public/shops', $imageFile);
+            // Storage::putFile('public/shops', $imageFile); リサイズなしの場合
+            $fileName = uniqid(rand().'_');
+            $extension = $imageFile->extension();
+            $fileNameToStore = $fileName. '.' . $extension;
+            $resizedImage = InterventionImage::make($imageFile)
+                ->resize(1920, 1080)->encode(); 
+            Storage::put('public/shops/' . $fileNameToStore, $resizedImage);
         }
         return redirect()->route('owner.shops.index');
     }
