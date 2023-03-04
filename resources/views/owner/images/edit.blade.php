@@ -46,9 +46,6 @@
 					<form id="delete_{{$image->id}}" method="post" action="{{ route('owner.images.destroy', ['image' => $image->id ] )}}">
 						@csrf
 						@method('delete')
-						<div class="p-2 w-full flex justify-around mt-32">
-							
-						</div>
 					</form>
 				</div>
 			</div>
