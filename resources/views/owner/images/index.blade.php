@@ -10,33 +10,26 @@
 			<div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 				<div class="p-6 mt-8 text-gray-900 relative">
 					<x-flash-message :status="session('status')" />
-					@foreach($shops as $shop)
-						<div class="w-1/2 p-4 mx-auto mt-4">
-							<a href="{{ route('owner.shops.edit', ['shop' => $shop->id]) }}">
+					<div class="flex justify-end">
+						<a href="{{ route('owner.images.create') }}" class="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">新規登録</a>
+					</div>
+					@foreach($images as $image)
+						<div class="w-1/4 p-4 mx-auto mt-4">
+							<a href="{{ route('owner.images.edit', ['image' => $image->id]) }}">
 								<div class="border rounded-md p-4">
 									<div class="mb-4">
-										@if($shop->is_selling)
-											<span class="border p-2 rounded-md bg-blue-400 text-white">
-												販売中
-											</span>
-										@else
-											<span class="border p-2 rounded-md bg-red-400 text-white">
-												停止中
-											</span>
-										@endif
-									</div>
-									<div class="mb-4">
 										<div class="text-lg">
-											{{ $shop->name }}
+											{{ $image->title }}
 										</div>
 										<div>
-											<x-thumbnail :filename="$shop->filename" type="shops"/>
+											<x-thumbnail :filename="$image->filename" type="products"/>
 										</div>
 									</div>
 								</div>
 							</a>
 						</div>
 					@endforeach
+					{{ $images->links() }}
 				</div>
 			</div>
 		</div>

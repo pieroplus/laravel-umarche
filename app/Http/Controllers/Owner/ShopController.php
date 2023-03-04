@@ -16,20 +16,20 @@ use App\Services\ImageService;
 class ShopController extends Controller
 {
 
-public function __construct()
-{
-    $this->middleware('auth:owners');
-    $this->middleware(function ($request, $next) {
-        $paramId = $request->route()->parameter('shop');
-        if (!is_null($paramId)) {
-            $ownerId = Shop::findOrFail($paramId)->owner->id;
-            if (Auth::id() !== (int)$ownerId) {
-                abort(403);
+    public function __construct()
+    {
+        $this->middleware('auth:owners');
+        $this->middleware(function ($request, $next) {
+            $paramId = $request->route()->parameter('shop');
+            if (!is_null($paramId)) {
+                $imagesOwnerId = Shop::findOrFail($paramId)->owner->id;
+                if (Auth::id() !== (int)$imagesOwnerId) {
+                    abort(403);
+                }
             }
-        }
-        return $next($request);
-    });
-}
+            return $next($request);
+        });
+    }
 
     public function index() :View
     {

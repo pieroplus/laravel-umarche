@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Shop;
+use App\Models\image;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Owner extends Authenticatable
 {
@@ -48,6 +50,11 @@ class Owner extends Authenticatable
 
     public function shop(): HasOne
     {
-        return$this->hasOne(Shop::class);
+        return $this->hasOne(Shop::class);
+    }
+
+    public function image(): HasMany
+    {
+        return $this->hasMany(Image::class);
     }
 }
