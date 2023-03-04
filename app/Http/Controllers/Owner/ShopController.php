@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Shop;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\RedirectResponse;
 
 class ShopController extends Controller
 {
@@ -42,14 +44,12 @@ public function edit(string $id): View
     return view('owner.shops.edit', compact('shop'));
 }
 
-    // public function update(OwnerUpdateRequest $request, string $id): RedirectResponse
-    // {
-    //     $owner = Owner::findOrFail($id);
-    //     $owner->name = $request->name;
-    //     $owner->email = $request->email;
-    //     $owner->password = Hash::make($request->password);
-    //     $owner->save();
-    //     return redirect()->route('admin.owners.index')
-    //         ->with(['message' => '更新に成功しました。']);
-    // }
+    public function update(Request $request, string $id): RedirectResponse
+    {
+        $imageFile = $request->image;
+        if(!is_null($imageFile) && $imageFile->isValid()) {
+            Storage::putFile('public/shops', $imageFile);
+        }
+        return redirect()->route('owner.shops.index');
+    }
 }
