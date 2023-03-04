@@ -25,7 +25,7 @@ class UploadImageRequest extends FormRequest
 
         $rules = [
             'image' => ['image','mimes:jpg,jpeg,png','max:2048'],
-            'files.*.image' => ['image','mimes:jpg,jpeg,png','max:2048'],
+            'files.*[image]' => ['image','mimes:jpg,jpeg,png','max:2048'],
         ];
 
         if(Route::currentRouteName() === 'owner.images.store'){

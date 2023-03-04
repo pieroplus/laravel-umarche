@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Requests\UploadImageRequest;
+use App\Services\ImageService;
 
 class ImageController extends Controller
 {
@@ -53,6 +54,21 @@ class ImageController extends Controller
      */
     public function store(UploadImageRequest $request): RedirectResponse
     {
+        $imageFiles = $request->file('files');
+        if (!is_null($imageFiles)) {
+            foreach($imageFiles as $imageFile) {
+                $fileNameToStore = ImageService::upload($imageFile, 'products');
+                Image::create([
+                    'owner_id' => Auth::id(),
+                    'filename' => $fileNameToStore,
+                ]);
+            }
+        }
+        return redirect()->route('owner.images.index')
+            ->with([
+                'message' => '画像を登録しました',
+                'status' => 'info',
+            ]);
 
     }
 
