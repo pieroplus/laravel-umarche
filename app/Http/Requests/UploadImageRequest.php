@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Route;
 
 class UploadImageRequest extends FormRequest
 {
@@ -21,9 +22,18 @@ class UploadImageRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'image'=>'image|mimes:jpg,jpeg,png|max:2048',
+
+        $rules = [
+            'image' => ['image','mimes:jpg,jpeg,png','max:2048'],
+            'files.*.image' => ['image','mimes:jpg,jpeg,png','max:2048'],
         ];
+
+        if(Route::currentRouteName() === 'owner.images.store'){
+            $rules = array_merge($rules,[
+                'files' => 'required',
+            ]);
+        }
+        return $rules;
     }
 
     public function messages(): array
