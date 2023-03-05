@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             OwnerSeeder::class,
             ShopSeeder::class,
             UserSeeder::class,
+            ImageSeeder::class,
         ]);
         // \App\Models\User::factory(10)->create();
 

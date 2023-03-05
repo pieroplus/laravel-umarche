@@ -13,6 +13,7 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        {{-- @vite(['resources/js/app-9a25e63b.js', 'resources/css/app-5009ef6d.css']) --}}
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
