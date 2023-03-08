@@ -19,8 +19,13 @@ class Shop extends Model
         'is_selling',
     ];
 
-public function owner(): BelongsTo
-{
-    return $this->belongsTo(Owner::class);
-}
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(Owner::class);
+    }
+
+    public function product()
+    {
+        return $this->hasMany(Product::class);
+    }
 }
