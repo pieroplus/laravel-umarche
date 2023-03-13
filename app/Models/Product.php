@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\SecondaryCategory;
 use App\Models\Shop;
 use App\Models\Image;
+use App\Models\Stock;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
@@ -30,5 +32,10 @@ class Product extends Model
     public function imageFirst(): BelongsTo
     {
         return $this->belongsTo(Image::class, 'image1', 'id');
+    }
+
+    public function stock(): HasMany
+    {
+        return $this->hasMany(Stock::class);
     }
 }
