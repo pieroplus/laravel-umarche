@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
 use App\Models\Owner;
 use App\Models\Image;
-use App\Models\SecondaryCategory;
+use App\Models\PrimaryCategory;
+use App\Models\Shop;
 use Illuminate\Contracts\View\View;
 
 class ProductController extends Controller
@@ -38,21 +39,29 @@ public function index(): View
     $ownerInfo = Owner::with('shop.product.imageFirst')
         ->where('id', '=', Auth::id())
         ->get();
-    // foreach($ownerInfo as $owner) {
-    //     // dd($owner->shop->product);
-    //     foreach($owner->shop->product as $product) {
-    //         dd($product->imageFirst->filename);
-    //     }
-    // }
     return view('owner.products.index', compact('ownerInfo'));
 }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): Response
+    public function create(): View
     {
-        //
+        $shops = Shop::where('owner_id', '=', Auth::id())
+            ->select('id', 'name')
+            ->get();
+        
+        $images = Image::where('owner_id', '=', Auth::id())
+            ->select('id', 'title', 'filename')
+            ->orderBy('updated_at', 'desc')
+            ->get();
+        
+        $categories = PrimaryCategory::with('secondary')
+            ->get();
+        
+        return view('owner.products.create',
+            compact('shops', 'images', 'categories')
+        );
     }
 
     /**
