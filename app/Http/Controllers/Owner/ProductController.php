@@ -69,7 +69,7 @@ public function index(): View
      */
     public function store(Request $request): RedirectResponse
     {
-        //
+        dd($request->all());
     }
 
     /**
