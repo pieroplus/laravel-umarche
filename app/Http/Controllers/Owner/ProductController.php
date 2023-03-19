@@ -186,10 +186,10 @@ public function update(ProductRequest $request, string $id): RedirectResponse
                 $product->save();
 
             $newQuantity = 0;
-            if($request->type === '1'){
+            if($request->type === \Constant::PRODUCT_LIST['add']){
                 $newQuantity = $request->quantity;
             }
-            if($request->type === '2'){
+            if($request->type === \Constant::PRODUCT_LIST['reduce']){
                 $newQuantity = $request->quantity * -1;
             }
             Stock::create([
