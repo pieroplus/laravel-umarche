@@ -212,6 +212,10 @@ public function update(ProductRequest $request, string $id): RedirectResponse
      */
     public function destroy(string $id): RedirectResponse
     {
-        //
+
+        Product::findOrFail($id)->delete(); 
+
+        return redirect()->route('owner.products.index')
+            ->with(['message' => '商品を削除しました。', 'status' => 'alert']);
     }
 }
