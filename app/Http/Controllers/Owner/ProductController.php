@@ -16,6 +16,7 @@ use App\Models\Stock;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\View as FacadesView;
 
 class ProductController extends Controller
 {
@@ -42,6 +43,7 @@ public function index(): View
     $ownerInfo = Owner::with('shop.product.imageFirst')
         ->where('id', '=', Auth::id())
         ->get();
+    // dd($ownerInfo);
     return view('owner.products.index', compact('ownerInfo'));
 }
 
@@ -123,19 +125,29 @@ public function index(): View
 
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id): Response
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id): Response
+    public function edit($id): View
     {
-        //
+        $product = Product::findOrFail($id);
+        $quantity = Stock::where('product_id', $product->id)
+            ->sum('quantity');
+
+        $shops = Shop::where('owner_id', Auth::id())
+            ->select('id', 'name')
+            ->get();
+
+        $images = Image::where('owner_id', Auth::id())
+            ->select('id', 'title', 'filename')
+            ->orderBy('updated_at', 'desc')
+            ->get();
+
+        $categories = PrimaryCategory::with('secondary')
+            ->get();
+
+        return view('owner.products.edit',
+            compact('product', 'quantity', 'shops', 
+            'images', 'categories'));
     }
 
     /**
