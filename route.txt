@@ -13,8 +13,9 @@
   POST            admin/confirm-password ..................... admin. › Admin\Auth\ConfirmablePasswordController@store
   GET|HEAD        admin/dashboard .................................................................... admin.dashboard
   POST            admin/email/verification-notification admin.verification.send › Admin\Auth\EmailVerificationNotific…
-  DELETE          admin/expired-owners/destroy/{owner} admin.expired-owners.delete › Admin\OwnersController@expiredOw…
+  DELETE          admin/expired-owners/destroy/{owner} admin.expired-owners.destroy › Admin\OwnersController@expiredO…
   GET|HEAD        admin/expired-owners/index ... admin.expired-owners.index › Admin\OwnersController@expiredOwnerIndex
+  PUT             admin/expired-owners/restore/{owner} admin.expired-owners.restore › Admin\OwnersController@expiredO…
   GET|HEAD        admin/forgot-password ....... admin.password.request › Admin\Auth\PasswordResetLinkController@create
   POST            admin/forgot-password .......... admin.password.email › Admin\Auth\PasswordResetLinkController@store
   GET|HEAD        admin/login ......................... admin.login › Admin\Auth\AuthenticatedSessionController@create
@@ -55,10 +56,22 @@
   POST            owner/email/verification-notification owner.verification.send › Owner\Auth\EmailVerificationNotific…
   GET|HEAD        owner/forgot-password ....... owner.password.request › Owner\Auth\PasswordResetLinkController@create
   POST            owner/forgot-password .......... owner.password.email › Owner\Auth\PasswordResetLinkController@store
+  GET|HEAD        owner/images ...................................... owner.images.index › Owner\ImageController@index
+  POST            owner/images ...................................... owner.images.store › Owner\ImageController@store
+  GET|HEAD        owner/images/create ............................. owner.images.create › Owner\ImageController@create
+  PUT|PATCH       owner/images/{image} ............................ owner.images.update › Owner\ImageController@update
+  DELETE          owner/images/{image} .......................... owner.images.destroy › Owner\ImageController@destroy
+  GET|HEAD        owner/images/{image}/edit ........................... owner.images.edit › Owner\ImageController@edit
   GET|HEAD        owner/login ......................... owner.login › Owner\Auth\AuthenticatedSessionController@create
   POST            owner/login ............................... owner. › Owner\Auth\AuthenticatedSessionController@store
   POST            owner/logout ...................... owner.logout › Owner\Auth\AuthenticatedSessionController@destroy
   PUT             owner/password ........................ owner.password.update › Owner\Auth\PasswordController@update
+  GET|HEAD        owner/products ................................ owner.products.index › Owner\ProductController@index
+  POST            owner/products ................................ owner.products.store › Owner\ProductController@store
+  GET|HEAD        owner/products/create ....................... owner.products.create › Owner\ProductController@create
+  PUT|PATCH       owner/products/{product} .................... owner.products.update › Owner\ProductController@update
+  DELETE          owner/products/{product} .................. owner.products.destroy › Owner\ProductController@destroy
+  GET|HEAD        owner/products/{product}/edit ................... owner.products.edit › Owner\ProductController@edit
   GET|HEAD        owner/profile .......................................... owner.profile.edit › ProfileController@edit
   PATCH           owner/profile ...................................... owner.profile.update › ProfileController@update
   DELETE          owner/profile .................................... owner.profile.destroy › ProfileController@destroy
@@ -66,6 +79,9 @@
   POST            owner/register .................................. owner. › Owner\Auth\RegisteredUserController@store
   POST            owner/reset-password ................. owner.password.store › Owner\Auth\NewPasswordController@store
   GET|HEAD        owner/reset-password/{token} ........ owner.password.reset › Owner\Auth\NewPasswordController@create
+  GET|HEAD        owner/shops/edit/{shop} ............................... owner.shops.edit › Owner\ShopController@edit
+  GET|HEAD        owner/shops/index ................................... owner.shops.index › Owner\ShopController@index
+  POST            owner/shops/update/{shop} ......................... owner.shops.update › Owner\ShopController@update
   GET|HEAD        owner/verify-email ........ owner.verification.notice › Owner\Auth\EmailVerificationPromptController
   GET|HEAD        owner/verify-email/{id}/{hash} ........ owner.verification.verify › Owner\Auth\VerifyEmailController
   PUT             password ................................ user.password.update › User\Auth\PasswordController@update
@@ -82,5 +98,5 @@
   GET|HEAD        verify-email ................ user.verification.notice › User\Auth\EmailVerificationPromptController
   GET|HEAD        verify-email/{id}/{hash} ................ user.verification.verify › User\Auth\VerifyEmailController
 
-                                                                                                   Showing [82] routes
+                                                                                                   Showing [98] routes
 

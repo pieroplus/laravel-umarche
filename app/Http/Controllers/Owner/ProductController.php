@@ -16,7 +16,7 @@ use App\Models\Stock;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\View as FacadesView;
+use App\Http\Requests\ProductRequest;
 
 class ProductController extends Controller
 {
@@ -72,22 +72,22 @@ public function index(): View
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(ProductRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:50',
-            'information' => 'required|string|max:1000',
-            'price' => 'required|integer',
-            'sort_order' => 'nullable|integer',
-            'quantity' => 'required|integer',
-            'shop_id' => 'required|exists:shops,id',
-            'category' => 'required|exists:secondary_categories,id',
-            'image1' => 'nullable|exists:images,id',
-            'image2' => 'nullable|exists:images,id',
-            'image3' => 'nullable|exists:images,id',
-            'image4' => 'nullable|exists:images,id',
-            'is_selling' => 'required'
-        ]);
+        // $request->validate([
+        //     'name' => 'required|string|max:50',
+        //     'information' => 'required|string|max:1000',
+        //     'price' => 'required|integer',
+        //     'sort_order' => 'nullable|integer',
+        //     'quantity' => 'required|integer',
+        //     'shop_id' => 'required|exists:shops,id',
+        //     'category' => 'required|exists:secondary_categories,id',
+        //     'image1' => 'nullable|exists:images,id',
+        //     'image2' => 'nullable|exists:images,id',
+        //     'image3' => 'nullable|exists:images,id',
+        //     'image4' => 'nullable|exists:images,id',
+        //     'is_selling' => 'required'
+        // ]);
 
         try{
             DB::transaction(function () use($request) {
@@ -153,10 +153,59 @@ public function index(): View
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id): RedirectResponse
-    {
-        //
+public function update(ProductRequest $request, string $id): RedirectResponse
+{
+    $request->validate([
+        'current_quantity' => 'required|integer',
+    ]);
+
+    $product = Product::findOrFail($id);
+    $quantity = Stock::where('product_id', $product->id)
+        ->sum('quantity');
+
+    if ($request->current_quantity !== $quantity){
+        $id = $request->route()->parameter('product');
+        return redirect()->route('owner.products.edit', [ 'product' => $id])
+        ->with(['message' => '在庫数が変更されています。再度確認してください。',
+            'status' => 'alert']);            
     }
+    try{
+        DB::transaction(function () use($request, $product) {
+            
+                $product->name = $request->name;
+                $product->information = $request->information;
+                $product->price = $request->price;
+                $product->sort_order = $request->sort_order;
+                $product->shop_id = $request->shop_id;
+                $product->secondary_category_id = $request->category;
+                $product->image1 = $request->image1;
+                $product->image2 = $request->image2;
+                $product->image3 = $request->image3;
+                $product->image4 = $request->image4;
+                $product->is_selling = $request->is_selling;
+                $product->save();
+
+            $newQuantity = 0;
+            if($request->type === '1'){
+                $newQuantity = $request->quantity;
+            }
+            if($request->type === '2'){
+                $newQuantity = $request->quantity * -1;
+            }
+            Stock::create([
+                'product_id' => $product->id,
+                'type' => $request->type,
+                'quantity' => $newQuantity
+            ]);
+        }, 2);
+    }catch(\Throwable $e){
+        Log::error($e);
+        throw $e;
+    }
+
+    return redirect()->route('owner.products.index')
+        ->with(['message' => '商品情報を更新しました。', 'status' => 'info']);
+}
 
     /**
      * Remove the specified resource from storage.
