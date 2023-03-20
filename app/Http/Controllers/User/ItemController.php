@@ -6,10 +6,16 @@ use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use App\Models\Product;
+use App\Models\Stock;
 use Illuminate\Http\Request;
 
 class ItemController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:users');
+    }
+    
     public function index(): View
     {
         $stocks = DB::table('t_stocks')
@@ -36,5 +42,22 @@ class ItemController extends Controller
             )
             ->get();
         return view('user.index', ['products' => $products, 'stocks' => $stocks]);
+    }
+
+    public function show($id)
+    {
+        $product = Product::findOrFail($id);
+        $quantity = Stock::where('product_id', $product->id)
+            ->sum('quantity');
+
+        if($quantity > 9){
+            $quantity = 9;
+        }
+
+        return view('user.show', 
+        [
+            'product' => $product,
+            'quantity' => $quantity
+        ]);
     }
 }
