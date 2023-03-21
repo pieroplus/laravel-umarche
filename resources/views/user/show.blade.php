@@ -98,24 +98,24 @@
       </div>
     </div>
   </div>
-  <div class="modal micromodal-slide" id="modal-1" aria-hidden="true">
-    <div class="modal__overlay" tabindex="-1" data-micromodal-close>
-      <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
-        <header class="modal__header">
-          <h2 class="text-xl text-gray-700" id="modal-1-title">
-            {{ $product->shop->name }}
-          </h2>
-          <button type="button" class="modal__close" aria-label="Close modal" data-micromodal-close></button>
-        </header>
-        <main class="modal__content" id="modal-1-content">
-          <p>
-            {{ $product->shop->information}}
-          </p>
-        </main>
-        <footer class="modal__footer">
-          <button type="button" class="modal__btn bg-gray-300" data-micromodal-close aria-label="Close this dialog window">閉じる</button>
-        </footer>
-      </div>
+<div class="modal micromodal-slide" id="modal-1" aria-hidden="true">
+  <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+    <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
+      <header class="modal__header">
+        <h2 class="text-xl text-gray-700" id="modal-1-title">
+          {{ $product->shop->name }}
+        </h2>
+        <button type="button" class="modal__close" aria-label="Close modal" data-micromodal-close></button>
+      </header>
+      <main class="modal__content" id="modal-1-content">
+        <p>
+          {{ $product->shop->information}}
+        </p>
+      </main>
+      <footer class="modal__footer">
+        <button type="button" class="modal__btn bg-gray-300" data-micromodal-close aria-label="Close this dialog window">閉じる</button>
+      </footer>
     </div>
   </div>
+</div>
 </x-app-layout>
