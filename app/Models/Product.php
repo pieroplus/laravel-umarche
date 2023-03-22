@@ -66,9 +66,9 @@ class Product extends Model
         return $this->hasMany(Stock::class);
     }
 
-    public function users(): BelongsToMany
-    {
-        return $this->belongsToMany(User::class, 'carts')
-            ->withPivot(['id', 'quantity']);
-    }
+public function users(): BelongsToMany
+{
+    return $this->belongsToMany(User::class, 'carts')
+        ->withPivot(['id', 'quantity']);
+}
 }
