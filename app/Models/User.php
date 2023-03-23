@@ -45,11 +45,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-public function products(): BelongsToMany
-{
-    return $this->belongsToMany(Product::class, 'carts')
-        ->withPivot(['id', 'quantity']);
-}
+    public function products(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, 'carts')
+            ->withPivot(['id', 'quantity']);
+    }
 
 
 }
