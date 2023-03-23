@@ -7,11 +7,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Cart;
 use App\Models\User;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class CartController extends Controller
 {
 
-public function index()
+public function index(): View
 {
     $user = User::findOrFail(Auth::id());
     $products = $user->products;
@@ -29,7 +31,7 @@ public function index()
     ]);
 }
 
-    public function add(Request $request)
+    public function add(Request $request): RedirectResponse
     {
         $itemInCart = Cart::where('product_id', '=', $request->product_id)
             ->where('user_id', '=', Auth::id())
@@ -46,6 +48,15 @@ public function index()
             ]);
         }
         
+        return redirect()->route('user.cart.index');
+    }
+
+    public function delete(string $id): RedirectResponse
+    {
+        Cart::where('product_id', $id)
+        ->where('user_id', Auth::id())
+        ->delete();
+
         return redirect()->route('user.cart.index');
     }
 }

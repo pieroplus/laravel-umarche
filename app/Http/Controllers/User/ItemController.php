@@ -44,7 +44,7 @@ class ItemController extends Controller
         return view('user.index', ['products' => $products, 'stocks' => $stocks]);
     }
 
-    public function show($id)
+    public function show(string $id): View
     {
         $product = Product::findOrFail($id);
         $quantity = Stock::where('product_id', $product->id)
