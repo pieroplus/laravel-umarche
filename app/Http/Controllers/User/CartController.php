@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Cart;
 use App\Models\User;
+use App\Models\Stock;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
@@ -54,9 +55,62 @@ public function index(): View
     public function delete(string $id): RedirectResponse
     {
         Cart::where('product_id', $id)
-        ->where('user_id', Auth::id())
-        ->delete();
+            ->where('user_id', Auth::id())
+            ->delete();
 
         return redirect()->route('user.cart.index');
+    }
+
+    public function checkout()
+    {
+        $user = User::findOrFail(Auth::id());
+        $products = $user->products;
+        $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET_KEY'));
+
+        $lineItems = [];
+        foreach($products as $product) {
+            $quantity = Stock::where('product_id', $product->id)->sum('quantity');
+
+            if ($product->pivot->quantity > $quantity) {
+                return redirect()->route('user.cart.index');
+            }
+            $productData = [
+                'name' => $product->name,
+                'description' => $product->information,
+                'images' => $product->image1
+            ];
+            $priceData = [
+                'currency' => 'jpy',
+                'product_data' => $productData,
+                'unit_amount' => $product->price,
+            ];
+            $lineItem = [
+                'quantity' => $quantity,
+                'price_data' => $priceData,
+            ];
+            $lineItems[] = $lineItem;
+        }
+
+        dd($lineItems);
+        \Stripe\Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
+        $checkoutSession = \Stripe\Checkout\Session::create([
+            'mode' => 'payment',
+            'line_items' => [$lineItems],
+            'success_url' => route('user.items.index'),
+            'cancel_url' => route('user.cart.index'),
+        ]);
+        // ストライプに渡す前に在庫を減らす
+        foreach($products as $product){
+            Stock::create([
+                'product_id' => $product->id,
+                'type' => \Constant::PRODUCT_LIST['reduce'],
+                'quantity' => $product->pivot->quantity * -1,
+            ]);
+        }
+
+
+        $publicKey = env('STRIPE_PUBLIC_KEY');
+
+        return view('user.checkout', compact('checkoutSession', 'publicKey'));
     }
 }
