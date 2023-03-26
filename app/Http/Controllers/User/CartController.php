@@ -62,7 +62,7 @@ public function index(): View
         return redirect()->route('user.cart.index');
     }
 
-    public function checkout()
+    public function checkout(): RedirectResponse
     {
         $user = User::findOrFail(Auth::id());
         $products = $user->products;
@@ -76,13 +76,13 @@ public function index(): View
             }
 
             // ストライプに渡す前に在庫を減らす
-            // foreach($products as $product){
-            //     Stock::create([
-            //         'product_id' => $product->id,
-            //         'type' => \Constant::PRODUCT_LIST['reduce'],
-            //         'quantity' => $product->pivot->quantity * -1,
-            //     ]);
-            // }
+            foreach($products as $product){
+                Stock::create([
+                    'product_id' => $product->id,
+                    'type' => \Constant::PRODUCT_LIST['reduce'],
+                    'quantity' => $product->pivot->quantity * -1,
+                ]);
+            }
 
 
             $lineItem = [
@@ -98,12 +98,12 @@ public function index(): View
             ];
             $lineItems[] = $lineItem;
         }
- 
+
         $stripe = new StripeClient(env('STRIPE_SECRET_KEY'));
         $session = $stripe->checkout->sessions->create([
             'line_items' => [$lineItems],
             'mode' => 'payment',
-            'success_url' => route('user.items.index'),
+            'success_url' => route('user.cart.success'),
             'cancel_url' => route('user.cart.index'),
         ]);
 
@@ -116,5 +116,11 @@ public function index(): View
         // header("Location: " . $session->url);
 
         // return view('user.checkout', compact('session', 'publicKey'));
+    }
+
+    public function success(): RedirectResponse
+    {
+        Cart::where('user_id', '=', Auth::id())->delete();
+        return redirect()->route('user.items.index');
     }
 }
