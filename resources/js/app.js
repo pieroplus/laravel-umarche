@@ -1,4 +1,6 @@
 import './bootstrap';
+import './swiper';
+import './micromodal';
 
 import Alpine from 'alpinejs';
 

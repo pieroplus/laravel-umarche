@@ -1,0 +1,1 @@
+<x-test-class-base :classBaseMessage="$classBaseMessage" />
