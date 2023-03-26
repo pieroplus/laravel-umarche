@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Cart;
 use App\Models\User;
 use App\Models\Stock;
+use Stripe\StripeClient;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
@@ -65,7 +66,6 @@ public function index(): View
     {
         $user = User::findOrFail(Auth::id());
         $products = $user->products;
-        $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET_KEY'));
 
         $lineItems = [];
         foreach($products as $product) {
@@ -74,43 +74,47 @@ public function index(): View
             if ($product->pivot->quantity > $quantity) {
                 return redirect()->route('user.cart.index');
             }
-            $productData = [
-                'name' => $product->name,
-                'description' => $product->information,
-                'images' => $product->image1
-            ];
-            $priceData = [
-                'currency' => 'jpy',
-                'product_data' => $productData,
-                'unit_amount' => $product->price,
-            ];
+
+            // ストライプに渡す前に在庫を減らす
+            // foreach($products as $product){
+            //     Stock::create([
+            //         'product_id' => $product->id,
+            //         'type' => \Constant::PRODUCT_LIST['reduce'],
+            //         'quantity' => $product->pivot->quantity * -1,
+            //     ]);
+            // }
+
+
             $lineItem = [
-                'quantity' => $quantity,
-                'price_data' => $priceData,
+                'quantity' => $product->pivot->quantity,
+                'price_data' => [
+                    'unit_amount' => $product->price,
+                    'currency' => 'JPY',
+                    'product_data' => [
+                        'name' => $product->name,
+                        'description' => $product->information,
+                    ],
+                ],
             ];
             $lineItems[] = $lineItem;
         }
-
-        dd($lineItems);
-        \Stripe\Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
-        $checkoutSession = \Stripe\Checkout\Session::create([
-            'mode' => 'payment',
+ 
+        $stripe = new StripeClient(env('STRIPE_SECRET_KEY'));
+        $session = $stripe->checkout->sessions->create([
             'line_items' => [$lineItems],
+            'mode' => 'payment',
             'success_url' => route('user.items.index'),
             'cancel_url' => route('user.cart.index'),
         ]);
-        // ストライプに渡す前に在庫を減らす
-        foreach($products as $product){
-            Stock::create([
-                'product_id' => $product->id,
-                'type' => \Constant::PRODUCT_LIST['reduce'],
-                'quantity' => $product->pivot->quantity * -1,
-            ]);
-        }
-
 
         $publicKey = env('STRIPE_PUBLIC_KEY');
+        // dd($session->url);
 
-        return view('user.checkout', compact('checkoutSession', 'publicKey'));
+        return redirect($session->url);
+
+        // header("HTTP/1.1 303 See Other");
+        // header("Location: " . $session->url);
+
+        // return view('user.checkout', compact('session', 'publicKey'));
     }
 }
