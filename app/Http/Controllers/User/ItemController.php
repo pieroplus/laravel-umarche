@@ -31,7 +31,7 @@ public function __construct()
     {
         $products = Product::availableItems()
             ->sortOrder($request->sort)
-            ->get();
+            ->paginate($request->pagination ?? 20);
         return view('user.index', ['products' => $products]);
     }
 
