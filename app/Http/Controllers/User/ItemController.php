@@ -7,6 +7,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use App\Models\Product;
 use App\Models\Stock;
+use App\Models\PrimaryCategory;
 use Illuminate\Http\Request;
 
 class ItemController extends Controller
@@ -29,10 +30,18 @@ public function __construct()
     
     public function index(Request $request): View
     {
+        // dd($request->all());
+        $categories = PrimaryCategory::with('secondary')->get();
         $products = Product::availableItems()
+            ->selectCategory($request->category ?? '0')
+            ->searchKeyword($request->keyword)
             ->sortOrder($request->sort)
             ->paginate($request->pagination ?? 20);
-        return view('user.index', ['products' => $products]);
+        return view('user.index', [
+            'products' => $products,
+            'categories' => $categories,
+            ]
+        );
     }
 
     public function show(string $id): View
@@ -52,3 +61,4 @@ public function __construct()
         ]);
     }
 }
+
