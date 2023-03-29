@@ -5,10 +5,12 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use App\Models\Product;
 use App\Models\Stock;
 use App\Models\PrimaryCategory;
 use Illuminate\Http\Request;
+use App\Mail\TestMail;
 
 class ItemController extends Controller
 {
@@ -31,6 +33,8 @@ public function __construct()
     public function index(Request $request): View
     {
         // dd($request->all());
+        Mail::to('test@example.com')
+            ->send(new TestMail());
         $categories = PrimaryCategory::with('secondary')->get();
         $products = Product::availableItems()
             ->selectCategory($request->category ?? '0')
