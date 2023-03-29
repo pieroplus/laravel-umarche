@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Cart;
 use App\Models\User;
 use App\Models\Stock;
+use App\Services\CartService;
 use Stripe\StripeClient;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -64,6 +65,10 @@ public function index(): View
 
     public function checkout(): RedirectResponse
     {
+        /////////
+        $items = Cart::where('user_id', '=', Auth::id())->get();
+        $products = CartService::getItemsInCart($items);
+        /////////
         $user = User::findOrFail(Auth::id());
         $products = $user->products;
 
