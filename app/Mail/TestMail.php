@@ -28,6 +28,7 @@ class TestMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
+            // from: new Address('jeffrey@example.com', 'Jeffrey Way'),
             subject: 'テスト送信完了',
         );
     }
