@@ -38,7 +38,7 @@ public function __construct()
         //     ->send(new TestMail());
 
         //非同期で送信
-        SendThanksMail::dispatch();
+        // SendThanksMail::dispatch();
         $categories = PrimaryCategory::with('secondary')->get();
         $products = Product::availableItems()
             ->selectCategory($request->category ?? '0')

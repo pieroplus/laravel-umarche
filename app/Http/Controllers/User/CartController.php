@@ -12,6 +12,9 @@ use App\Services\CartService;
 use Stripe\StripeClient;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Mail;
+use App\Jobs\SendThanksMail;
+use App\Mail\ThanksMail;
 
 class CartController extends Controller
 {
@@ -68,6 +71,9 @@ public function index(): View
         /////////
         $items = Cart::where('user_id', '=', Auth::id())->get();
         $products = CartService::getItemsInCart($items);
+        $user = User::findOrFail(Auth::id());
+        SendThanksMail::dispatch($products, $user);
+        dd('ユーザメール送信');
         /////////
         $user = User::findOrFail(Auth::id());
         $products = $user->products;
