@@ -8,9 +8,14 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Cart;
 use App\Models\User;
 use App\Models\Stock;
+use App\Services\CartService;
 use Stripe\StripeClient;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Mail;
+use App\Jobs\SendThanksMail;
+use App\Jobs\SendOrderedMail;
+use App\Mail\ThanksMail;
 
 class CartController extends Controller
 {
@@ -120,6 +125,14 @@ public function index(): View
 
     public function success(): RedirectResponse
     {
+        $items = Cart::where('user_id', '=', Auth::id())->get();
+        $products = CartService::getItemsInCart($items);
+        $user = User::findOrFail(Auth::id());
+        SendThanksMail::dispatch($products, $user);
+        foreach($products as $product) {
+            SendOrderedMail::dispatch($product, $user);
+        }
+        // dd('ユーザメール送信');
         Cart::where('user_id', '=', Auth::id())->delete();
         return redirect()->route('user.items.index');
     }
